@@ -90,13 +90,12 @@ def create_clubs_array(clubs):
         name = get_club_name(club)
         description = get_club_description(club)
         tags = get_club_tags(club)
-        allClubs.append(Club(name, description, tags))
+        allClubs.append(Club(name, description, tags, 0))
 
     return allClubs
 
 def save_club_info(clubs):
     with open('clubInfo.club', 'wb') as config_club_file:
-        # Step 3
         pickle.dump(clubs, config_club_file)
 
 def read_club_info():
@@ -104,3 +103,7 @@ def read_club_info():
         config_clubs = pickle.load(config_club_file)
 
     return config_clubs
+
+#Used to convert list of objects to JSON
+def obj_dict(obj):
+    return obj.__dict__
