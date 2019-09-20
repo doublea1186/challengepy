@@ -1,5 +1,6 @@
 from flask import Flask, request
 from scraper import * # Web Scraping utility functions for Online Clubs with Penn.
+
 app = Flask(__name__)
 
 @app.route('/')
