@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
+from club import *
 import requests
+import pickle
 
 
 def get_html(url):
@@ -48,7 +50,7 @@ def get_clubs(soup):
     This function should return a list of soups with each soup corresponding to the html
     for a single club.
     """
-    return [] # TODO: Implement this function
+    return get_elements_with_class(soup, 'div', 'box') # TODO: Implement this function
 
 def get_club_name(club):
     """
@@ -65,11 +67,40 @@ def get_club_description(club):
     """
     Extract club description from a soup containing a single club.
     """
-    return '' # TODO: Implement this function
+    elts = get_elements_with_class(club, 'em', '')
+    if len(elts) < 1:
+        return ''
+    return elts[0].text
 
 def get_club_tags(club):
     """
     Get the tag labels for all tags associated with a single club.
     """
-    return [] # TODO: Implement this function
+    elts = get_elements_with_class(club, 'span', 'tag is-info is-rounded')
+    if len(elts) < 1:
+        return ''
+    return elts[0].text
 
+def create_clubs_array(clubs):
+    """
+    Create club objects for all soups in the given list
+    """
+    allClubs = []
+    for club in clubs:
+        name = get_club_name(club)
+        description = get_club_description(club)
+        tags = get_club_tags(club)
+        allClubs.append(Club(name, description, tags))
+
+    return allClubs
+
+def save_club_info(clubs):
+    with open('clubInfo.club', 'wb') as config_club_file:
+        # Step 3
+        pickle.dump(clubs, config_club_file)
+
+def read_club_info():
+    with open('clubInfo.club', 'rb') as config_club_file:
+        config_clubs = pickle.load(config_club_file)
+
+    return config_clubs
