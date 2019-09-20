@@ -1,5 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from scraper import * # Web Scraping utility functions for Online Clubs with Penn.
+from user import *
+import requests
 import json
 import os
 
@@ -10,16 +12,25 @@ app = Flask(__name__)
 def home():
     app.secret_key = os.urandom(12)
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('signup.html')
     else:
         return "Hello Boss!"
 
-# @app.route('/signup', methods=['POST'])
-# def signup():
-#     if not session['logged_in']:
-#         username = request.form['username']
-#         password = request.form['password']
-#         return username
+
+@app.route('/signup', methods=["POST"])
+def signup():
+    name = request.form['name']
+    user = request.form['username']
+    password = request.form['password']
+    new_user = User(name, user, password, 0)
+    current_user = new_user.save_user()
+    json_string = json.dumps(new_user.read_user_data(), default=obj_dict)
+
+    if current_user:
+        session['logged_in'] = True
+        return "Your info has been saved"
+    else:
+        return render_template('login.html')
 
 
 @app.route('/login', methods=['POST'])
@@ -29,7 +40,7 @@ def do_admin_login():
         return "HI"
     else:
         flash('wrong password!')
-        return home()
+        return render_template('login.html')
 
 
 @app.route('/logout')
@@ -68,8 +79,9 @@ def api_clubs():
 def api_user(username):
     if not session.get('logged_in'):
         return render_template('login.html')
-    if request.method == "GET":
-        return username
+    else:
+        if request.method == "GET":
+            return username
 
 
 @app.route('/api/favorite', methods=["POST"])
