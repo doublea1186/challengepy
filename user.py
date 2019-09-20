@@ -24,10 +24,10 @@ class User:
             pickle.dump(user_info, config_file)
         return True
 
-    def authenticate(self, user, password):
-        user_info = self.read_user_data
+    def authenticate(self):
+        user_info = self.read_user_data()
         for x in user_info:
-            if (x.user == user) & (x.password == password):
+            if (x.user == self.user) & (x.password == self.password):
                 return True
         return False
 
