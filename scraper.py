@@ -14,12 +14,14 @@ def get_html(url):
     else:
         return None
 
+
 def get_clubs_html():
     """
     Get the HTML of online clubs with Penn.
     """
     url = 'https://ocwp.pennlabs.org'
     return get_html(url)
+
 
 def soupify(html):
     """
@@ -45,12 +47,14 @@ def get_elements_with_class(soup, elt, cls):
     """ 
     return soup.findAll(elt, {'class': cls})
 
+
 def get_clubs(soup):
     """
     This function should return a list of soups with each soup corresponding to the html
     for a single club.
     """
     return get_elements_with_class(soup, 'div', 'box') # TODO: Implement this function
+
 
 def get_club_name(club):
     """
@@ -63,6 +67,7 @@ def get_club_name(club):
         return ''
     return elts[0].text
 
+
 def get_club_description(club):
     """
     Extract club description from a soup containing a single club.
@@ -72,6 +77,7 @@ def get_club_description(club):
         return ''
     return elts[0].text
 
+
 def get_club_tags(club):
     """
     Get the tag labels for all tags associated with a single club.
@@ -80,6 +86,7 @@ def get_club_tags(club):
     if len(elts) < 1:
         return ''
     return elts[0].text
+
 
 def create_clubs_array(clubs):
     """
@@ -94,15 +101,34 @@ def create_clubs_array(clubs):
 
     return allClubs
 
+
 def save_club_info(clubs):
     with open('clubInfo.club', 'wb') as config_club_file:
         pickle.dump(clubs, config_club_file)
+
+
+def init_clubs():
+    html = get_clubs_html()
+    soup = soupify(html)
+    y = get_clubs(soup)
+    clubs = create_clubs_array(y)
+    save_club_info(clubs)
 
 def read_club_info():
     with open('clubInfo.club', 'rb') as config_club_file:
         config_clubs = pickle.load(config_club_file)
 
     return config_clubs
+
+
+def get_club_index(name):
+    all_clubs = read_club_info()
+    for x in all_clubs:
+        if x.name == name:
+            return all_clubs.indexOf(x)
+
+    return -1
+
 
 #Used to convert list of objects to JSON
 def obj_dict(obj):

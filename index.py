@@ -7,6 +7,10 @@ import os
 
 app = Flask(__name__)
 
+#uncomment these lines if you would like to reinitialize the club list and user database
+#init_clubs()
+#User("", "", "", "").init_users()
+
 
 @app.route('/')
 def home():
@@ -37,7 +41,6 @@ def do_admin_login():
     user = request.form['username']
     password = request.form['password']
     user = User("", user, password, 0)
-    print(user.authenticate())
 
     if user.authenticate():
         session['logged_in'] = True
@@ -89,6 +92,19 @@ def api_clubs():
             save_club_info(clubs)
 
 
+@app.route('/api/clubs/forms/', methods=["GET", "POST"])
+def api_clubs_forms():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        if request.method == "GET":
+            return render_template('upload.html')
+        else:
+            name = request.form['club name']
+            file = request.form['file']
+            return "MONKEY"
+
+
 @app.route('/api/user/<username>', methods=["GET"])
 def api_user(username):
     if not session.get('logged_in'):
@@ -99,7 +115,7 @@ def api_user(username):
             all_users = user.read_user_data()
 
             for user in all_users:
-                if user.user == username:
+                if user.user.lower() == username.lower():
                     return json.dumps(user, default=obj_dict)
             return "NO USER FOUND"
 
@@ -110,7 +126,25 @@ def api_favorite():
         return render_template('login.html')
     else:
         if request.method == "POST":
-            return "API FAVORITE"
+            club = request.form['club']
+            user = User("", request.form['user'], "", "")
+            all_users = user.read_user_data()
+            user_index = user.find_user_index()
+
+            if not all_users[user_index] & user_index != -1:
+                all_users[user_index].set_likes(True)
+                with open('user.info', 'wb') as config_file:
+                    pickle.dump(all_users, config_file)
+
+            all_clubs = read_club_info()
+            club_index = get_club_index(club)
+
+            if club_index != -1:
+                all_clubs[club_index].set_likes(all_clubs[club_index].get_likes() + 1)
+                with open('clubsInfo.club', 'wb'):
+                    pickle.dump(all_clubs)
+
+            return "Your favorite club has been recorded"
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 import pickle
+import rncryptor
 
 
 class User:
@@ -8,21 +9,25 @@ class User:
         self.password = password
         self.likes = likes
 
-    def init_users(self):
-        users = []
-        users.append(User('test', 'test', 'test', 0))
-        with open('user.info', 'wb') as config_file:
-            pickle.dump(users, config_file)
 
     def save_user(self):
         user_info = self.read_user_data()
         for x in user_info:
             if self.user == x.user:
                 return False
+
         user_info.append(self)
         with open('user.info', 'wb') as config_file:
             pickle.dump(user_info, config_file)
         return True
+
+    def find_user_index(self):
+        user_info = self.read_user_data()
+        for x in user_info:
+            if x.user == self.user:
+                return user_info.indexOf(x)
+
+        return -1
 
     def authenticate(self):
         user_info = self.read_user_data()
@@ -30,6 +35,13 @@ class User:
             if (x.user == self.user) & (x.password == self.password):
                 return True
         return False
+
+    @staticmethod
+    def init_users():
+        users = []
+        users.append(User('test', 'test', 'test', False))
+        with open('user.info', 'wb') as config_file:
+            pickle.dump(users, config_file)
 
     @staticmethod
     def contains(list, filter):

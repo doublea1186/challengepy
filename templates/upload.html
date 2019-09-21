@@ -1,0 +1,29 @@
+<!doctype html>
+<title>Club File Upload</title>
+<h2>Select a file to upload</h2>
+<p>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+</p>
+<form method="post" action="/api/clubs/forms" enctype="multipart/form-data">
+    <dl>
+		<p>
+			<input type="file" name="file" autocomplete="off" required>
+		</p>
+        <p>
+            <div class="control-group">
+				<input type="club name" class="club-name-field" placeholder="club name" name="club name" required>
+<label class="club-name-field-icon fui-lock"></label></div>
+        </p>
+    </dl>
+    <p>
+		<input type="submit" value="Submit">
+	</p>
+</form>
