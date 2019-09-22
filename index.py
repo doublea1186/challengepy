@@ -4,7 +4,7 @@ from user import *
 import requests
 import json
 import os
-
+from unitTests import *
 app = Flask(__name__)
 
 #uncomment these lines if you would like to reinitialize the club list and user database
@@ -79,15 +79,16 @@ def api_clubs():
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
+        create_club()
         clubs = read_club_info()
         if request.method == "GET":
             json_string = json.dumps(clubs, default=obj_dict)
             return json_string
 
         else:
-            name = request.data.name
-            description = request.description
-            tags = requests.description
+            name = request.form['name']
+            description = request.form['description']
+            tags = requests.form['tags']
             clubs.append(Club(name, description, tags, 0))
             save_club_info(clubs)
 
@@ -132,19 +133,26 @@ def api_favorite():
             user_index = user.find_user_index()
 
             if not all_users[user_index] & user_index != -1:
-                all_users[user_index].set_likes(True)
-                with open('user.info', 'wb') as config_file:
-                    pickle.dump(all_users, config_file)
+                likes = all_users[user_index].get_likes
+                for like in likes:
+                    if like == club:
+                        return
+                    else:
+                        previous_clubs = all_users[user_index].get_likes();
+                        previous_clubs.append(club)
+                        all_users[user_index].set_likes(previous_clubs)
+                        with open('user.info', 'wb') as config_file:
+                            pickle.dump(all_users, config_file)
 
-            all_clubs = read_club_info()
-            club_index = get_club_index(club)
+                        all_clubs = read_club_info()
+                        club_index = get_club_index(club)
 
-            if club_index != -1:
-                all_clubs[club_index].set_likes(all_clubs[club_index].get_likes() + 1)
-                with open('clubsInfo.club', 'wb'):
-                    pickle.dump(all_clubs)
+                        if club_index != -1:
+                            all_clubs[club_index].set_likes(all_clubs[club_index].get_likes() + 1)
+                            with open('clubsInfo.club', 'wb'):
+                                pickle.dump(all_clubs)
 
-            return "Your favorite club has been recorded"
+                            return "Your favorite club has been recorded"
 
 
 if __name__ == '__main__':

@@ -129,7 +129,6 @@ def get_club_index(name):
 
     return -1
 
-
 #Used to convert list of objects to JSON
 def obj_dict(obj):
     return obj.__dict__

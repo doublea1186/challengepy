@@ -1,5 +1,4 @@
 import pickle
-import rncryptor
 
 
 class User:
@@ -8,7 +7,6 @@ class User:
         self.user = user
         self.password = password
         self.likes = likes
-
 
     def save_user(self):
         user_info = self.read_user_data()
@@ -39,7 +37,7 @@ class User:
     @staticmethod
     def init_users():
         users = []
-        users.append(User('test', 'test', 'test', False))
+        users.append(User('admin', 'admin', 'password', ""))
         with open('user.info', 'wb') as config_file:
             pickle.dump(users, config_file)
 
