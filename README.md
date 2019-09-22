@@ -26,8 +26,14 @@ To install additional packages run `pipenv install <package_name>` within the cl
 Standard Login information --> username: admin password: password. Use this if you don't want to sign up. Otherwise
 you can sign up with your own user and password and it will record it
 
+## Sign Up
+> /signup
+
+Standard Sign up --> input name, username, password and it will store it in the database. If you sign up with a username
+thats already in the system, it will redirect you to the login page. 
+
 ## Get Club Info
-> api/clubs
+> /api/clubs
 
 After you are logged in, to see the information for all clubs in json form you would hit the /api/clubs endpoint with
 a get request, either using some external library or more easily just reroute the url to the base url plus the endpoint
@@ -58,6 +64,18 @@ but you cannot like a single club more than once.
 After you are logged in, you can use the endpoint /api/clubs/forms to upload files to clubs. The form submission page is a 
 route created by one of the html templates. Currently when submitting the file it does nothing, because I have not had 
 time to implement it, but further functionality is quite simple to do at this point.
+
+## Improvements to be made given more time 
+
+1. Realistically the database would not use the pickle library, instead it would have been tied into an SQL database hosted 
+in the cloud. 
+2. The file structure would also be different, making different routers for things related to users and a different
+router for things related to clubs. 
+3. Code can be more efficient in terms of checking for already existing users/clubs using a SQL database, but since the 
+data is stored locally the lack of speed efficiency in return for time efficiency is a necessary sacrifice. 
+4. Routing the website to an ngrok base would be preferable for this so that other users can access the url endpoint. 
+5. File submission page would preferably save files for clubs under a different database instead of doing nothing. 
+6. Unit tests would be made for outside users to test initial functionality. 
 
 
 

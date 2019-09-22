@@ -1,10 +1,7 @@
 from flask import Flask, flash, render_template, request, session
 from scraper import * # Web Scraping utility functions for Online Clubs with Penn.
 from user import *
-import requests
-import json
 import os
-from unitTests import *
 app = Flask(__name__)
 
 #uncomment these lines if you would like to reinitialize the club list and user database
